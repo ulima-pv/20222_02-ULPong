@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class BallController : MonoBehaviour
     private float mSpeedY;
 
     private Rigidbody2D mRb;
+
+    // Evento
+    public event EventHandler OnGoal;
     
     private void Start()
     {
@@ -28,10 +32,23 @@ public class BallController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collider)
     {
-        Debug.Log("Hay colision");
-        mSpeedX *= -1;
+        if (collider.gameObject.CompareTag("Paddles"))
+        {
+            mSpeedX *= -1;
 
-        mSpeedY = Random.Range(-initialSpeed, initialSpeed);
+            mSpeedY = UnityEngine.Random.Range(-initialSpeed, initialSpeed);
+        }else
+        {
+            mSpeedY *= -1;
+        }
+        
 
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Sucede el evento OnGoal
+        OnGoal?.Invoke(this, EventArgs.Empty);
+        
     }
 }
