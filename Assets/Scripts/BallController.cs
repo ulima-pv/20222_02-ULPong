@@ -19,17 +19,23 @@ public class BallController : MonoBehaviour
     public float initialSpeed = 5f;
     private float mSpeedX;
     private float mSpeedY;
+    private AudioSource mAudioSource;
 
     private Rigidbody2D mRb;
 
     // Evento
     public event EventHandler OnGoal;
+    public AudioClip audioGoal;
+    public AudioClip audioPaddle;
+    public AudioClip audioWall;
     
     private void Start()
     {
         mRb = GetComponent<Rigidbody2D>();
+        mAudioSource = GetComponent<AudioSource>();
         mSpeedX = -initialSpeed;
         mSpeedY = 0f;
+
     }
 
     private void Update()
@@ -45,11 +51,15 @@ public class BallController : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Paddles"))
         {
-            mSpeedX *= -1;
+            mAudioSource.clip = audioPaddle;
+            mAudioSource.Play();
+            mSpeedX *= -1;  
 
             mSpeedY = UnityEngine.Random.Range(-initialSpeed, initialSpeed);
         }else
         {
+            mAudioSource.clip = audioWall;
+            mAudioSource.Play();
             mSpeedY *= -1;
         }
         
@@ -66,7 +76,9 @@ public class BallController : MonoBehaviour
         {
             data = new OnGoalEventArg(NumeroJugador.UNO);
         }*/
-        Debug.Log(mSpeedX);
+        mAudioSource.clip = audioGoal;
+        mAudioSource.Play();
+        
         OnGoalEventArg data = new OnGoalEventArg(
             mSpeedX < 0 ? NumeroJugador.DOS : NumeroJugador.UNO
         );
